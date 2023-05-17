@@ -11,7 +11,7 @@ A proof-of-concept minimal functional shell written in rust
 - Simple signal handling
 - Background processes ("&")
 - Redirections
-- configuration file (for colors, etc)
+- configuration file (for colors, aliases, etc)
 
 # Using simple-shell
 Clone this repo. To build the binary:
