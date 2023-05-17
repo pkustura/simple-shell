@@ -3,6 +3,7 @@ use std::io::{stdin, stdout, Write};
 use std::path::Path;
 use std::process::{Child, Command, Stdio};
 
+// mod display; 
 mod shell;
 
 fn main() {
@@ -13,7 +14,7 @@ fn main() {
         // let mut input = String::new();
         //display prompt to user
         // input = prompt_user();
-        let input = prompt_user();
+        let input = shell::prompt_user();
         //handle piping: split commands in array by pipes.
         let mut commands = input.split("|").peekable();
 
@@ -39,13 +40,15 @@ fn main() {
                         None => "/",
                     };
 
-                    if let Err(e) = change_dir(&path) {
-                        eprintln!("Error: failed to change directory.");
+                    if let Err(e) = shell::change_dir(&path) {
+                        // eprintln!("Error: failed to change directory.");
+                        shell::err_log(e.to_string());
                     }
 
 
                 }
                 cmd => {
+                    //for piping stdout from last command into stdin of next
                     let stdin = last_out.map_or(Stdio::inherit(),
                                                 |out: Child| {
                                                     Stdio::from(out.stdout.unwrap())
@@ -59,6 +62,7 @@ fn main() {
                         };
                     
                     // Child struct
+                    // command is like builder for child (running/exited process)
                     let output = Command::new(cmd)
                     .args(args)
                     .stdin(stdin)
@@ -70,7 +74,8 @@ fn main() {
                             last_out = Some(output);
                             }
                         Err(e) => {
-                            eprintln!("Error: {}", e);
+                            // eprintln!("Error: {}", e);
+                            shell::err_log(e.to_string());
                             last_out = None;
                             }
                     };
@@ -79,16 +84,16 @@ fn main() {
             };
         }
 
-         if let Some(mut final_command) = last_out {
+         if let Some(mut dependent) = last_out {
             // block until the final command has finished
-            final_command.wait().unwrap();
+            dependent.wait().unwrap();
         }
     }
 }
 
 fn prompt_user() -> String {
 //    let path = env::current_dir().unwrap();
-    print!("$ ");
+    shell::print_prompt();
     stdout().flush().unwrap(); //flush stdout
     //read input
     let mut buf = String::new();
