@@ -15,11 +15,11 @@ A proof-of-concept minimal functional shell written in rust
 
 # Using simple-shell
 Clone this repo. To build the binary:
-'''
+```
 cargo build
-'''
+```
 And to run (dev):
-'''
+```
 cargo run
-'''
+```
 
