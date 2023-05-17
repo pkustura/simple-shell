@@ -13,82 +13,12 @@ fn main() {
 
         // let mut input = String::new();
         //display prompt to user
-        // input = prompt_user();
+    // input = prompt_user();
         let input = shell::prompt_user();
         //handle piping: split commands in array by pipes.
-        let mut commands = input.split("|").peekable();
-
-        //we need to keep track of last output for piping
-        //and eventually outputting.
-        let mut last_out = None;
-        
-        while let Some(cmd) = commands.next() {
-            let mut args = cmd.trim().split_whitespace();
-       
-            //avoid panic on empty input
-            let cmd = match args.next() {
-                Some(cmd) => cmd,
-                None => continue,
-            };
-        
-            match cmd {
-            //builtins implemented here.
-                "exit" => return, 
-                "cd" => {
-                    let path = match args.next() {
-                        Some(path) => path.trim(),
-                        None => "/",
-                    };
-
-                    if let Err(e) = shell::change_dir(&path) {
-                        // eprintln!("Error: failed to change directory.");
-                        shell::err_log(e.to_string());
-                    }
-
-
-                }
-                cmd => {
-                    //for piping stdout from last command into stdin of next
-                    let stdin = last_out.map_or(Stdio::inherit(),
-                                                |out: Child| {
-                                                    Stdio::from(out.stdout.unwrap())
-                                                });            
-        
-
-                    let stdout = if commands.peek().is_some() {
-                            Stdio::piped()
-                        } else {
-                            Stdio::inherit()
-                        };
-                    
-                    // Child struct
-                    // command is like builder for child (running/exited process)
-                    let output = Command::new(cmd)
-                    .args(args)
-                    .stdin(stdin)
-                    .stdout(stdout)
-                    .spawn();
-                
-                    match output {
-                        Ok(output) => {
-                            last_out = Some(output);
-                            }
-                        Err(e) => {
-                            // eprintln!("Error: {}", e);
-                            shell::err_log(e.to_string());
-                            last_out = None;
-                            }
-                    };
-
-                }
-            };
-        }
-
-         if let Some(mut dependent) = last_out {
-            // block until the final command has finished
-            dependent.wait().unwrap();
-        }
+        shell::exec_input(input);
     }
+    
 }
 
 fn prompt_user() -> String {
