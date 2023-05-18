@@ -25,3 +25,7 @@ And to run (dev):
 cargo run
 ```
 
+# For CS377:
+
+My video presentation is located here: https://drive.google.com/file/d/1ZZmIbefCgjPwfUYxlCmPQjpjwOT5_7ay/view
+
