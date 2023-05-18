@@ -8,9 +8,17 @@ mod shell;
 
 fn main() {
 
+    // startup directory arg
+    let args: Vec<String> = env::args().collect();
+    if args.len() > 2 {
+        println!("Intended usage: ./simple_shell optional:start_dir")
+    } else if args.len() == 2 {
+        let path = Path::new(args.get(1).unwrap());
+        env::set_current_dir(&path);
+    }
+
     // main loop for shell
     loop {
-
         // let mut input = String::new();
         //display prompt to user
     // input = prompt_user();
@@ -21,23 +29,4 @@ fn main() {
     
 }
 
-fn prompt_user() -> String {
-//    let path = env::current_dir().unwrap();
-    shell::print_prompt();
-    stdout().flush().unwrap(); //flush stdout
-    //read input
-    let mut buf = String::new();
-    stdin().read_line(&mut buf).unwrap();
-    return buf;
-}
 
-
-fn change_dir(path: &str) -> Result<(), std::io::Error> {
-    let path = Path::new(path);
-    return env::set_current_dir(&path);
-}
-
-// execution of a command with arguments and piping. "commands" is an iterator of cmd Strings.
-// fn exec_command(commands: &str, is_background: bool) -> Child {
-//
-// }

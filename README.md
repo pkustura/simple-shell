@@ -1,8 +1,10 @@
  # simple-shell
 A proof-of-concept minimal functional shell written in rust
+Written while learning rust, and my first rust program! Hello, world!
 
 # Implemented Features:
-- Built-in commands: exit, cd
+- Optional path argument to set current working directory
+- Basic built-in commands: exit, cd
 - Basic command piping (with "|" but not yet supporting "&|")
 - Basic text coloring (for error output and user prompt) via crate owo-colors
 
