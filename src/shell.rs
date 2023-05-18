@@ -16,10 +16,12 @@ pub fn prompt_user() -> String {
 }
 
 pub fn exec_input(input: String) {
+
+    //handle piping: split commands in array by pipes.
     let mut commands = input.split("|").peekable();
 
-        //we need to keep track of last output for piping
-        //and eventually outputting.
+    //we need to keep track of last output for piping
+    //and eventually outputting.
     let mut last_out = None;
         
     while let Some(cmd) = commands.next() {
@@ -32,7 +34,7 @@ pub fn exec_input(input: String) {
         };
         
         match cmd {
-        //builtins implemented here.
+            // builtins implemented here.
             "exit" => {
                 std::process::exit(0);
             } 
@@ -46,9 +48,8 @@ pub fn exec_input(input: String) {
                     // eprintln!("Error: failed to change directory.");
                     err_log(e.to_string());
                 }
-
-
             }
+            // non-built in: general command execution
             cmd => {
                 //for piping stdout from last command into stdin of next
                 let stdin = last_out.map_or(Stdio::inherit(),

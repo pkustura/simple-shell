@@ -19,11 +19,8 @@ fn main() {
 
     // main loop for shell
     loop {
-        // let mut input = String::new();
         //display prompt to user
-    // input = prompt_user();
         let input = shell::prompt_user();
-        //handle piping: split commands in array by pipes.
         shell::exec_input(input);
     }
     
