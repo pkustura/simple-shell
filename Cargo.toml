@@ -7,3 +7,4 @@ edition = "2023"
 
 [dependencies]
 owo-colors = "3"
+home = "0.5.5"

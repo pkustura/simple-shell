@@ -2,8 +2,7 @@ use std::env;
 use std::io::{stdin, stdout, Write};
 use std::path::Path;
 use std::process::{Child, Command, Stdio};
-
-// use display::*;
+use home::home_dir;
 
 pub fn prompt_user() -> String {
 //    let path = env::current_dir().unwrap();
@@ -34,22 +33,15 @@ pub fn exec_input(input: String) {
         };
         
         match cmd {
-            // builtins implemented here.
+            // --- builtins implemented here. ---
             "exit" => {
                 std::process::exit(0);
             } 
             "cd" => {
-                let path = match args.next() {
-                    Some(path) => path.trim(),
-                    None => "./", // dot required, otherwise does root...
-                };
-
-                if let Err(e) = change_dir(&path) {
-                    // eprintln!("Error: failed to change directory.");
-                    err_log(e.to_string());
-                }
+                change_dir(args.next());
             }
-            // non-built in: general command execution
+            // ---
+            // general command execution
             cmd => {
                 //for piping stdout from last command into stdin of next
                 let stdin = last_out.map_or(Stdio::inherit(),
@@ -83,9 +75,8 @@ pub fn exec_input(input: String) {
                         }
                     };
                 }
-                //cmd end
-            }; //match end
-         }  //loop end
+            };
+         }
         if let Some(mut dependent) = last_out {
             // block until the final command has finished
             dependent.wait().unwrap();
@@ -93,9 +84,14 @@ pub fn exec_input(input: String) {
 }
 
 
-pub fn change_dir(path: &str) -> Result<(), std::io::Error> {
-    let path = Path::new(path);
-    return env::set_current_dir(&path);
+pub fn change_dir(dir_str: Option<&str>) {
+                let pathbuf = match dir_str {
+                    Some(str) => Path::new(str.trim()).to_path_buf(),
+                    None => home_dir().unwrap(),
+                };
+                if let Err(e) = env::set_current_dir(&pathbuf) {
+                    err_log(e.to_string());
+                }
 }
 
 
