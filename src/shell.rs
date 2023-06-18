@@ -11,20 +11,20 @@ pub fn prompt_user() -> String {
     //read input
     let mut buf = String::new();
     stdin().read_line(&mut buf).unwrap();
-    return buf;
+    buf
 }
 
 pub fn exec_input(input: String) {
 
     //handle piping: split commands in array by pipes.
-    let mut commands = input.split("|").peekable();
+    let mut commands = input.split('|').peekable();
 
     //we need to keep track of last output for piping
     //and eventually outputting.
     let mut last_out = None;
         
     while let Some(cmd) = commands.next() {
-        let mut args = cmd.trim().split_whitespace();
+        let mut args = cmd.split_whitespace();
        
         //avoid panic on empty input
         let cmd = match args.next() {
@@ -89,7 +89,7 @@ pub fn change_dir(dir_str: Option<&str>) {
                     Some(str) => Path::new(str.trim()).to_path_buf(),
                     None => home_dir().unwrap(),
                 };
-                if let Err(e) = env::set_current_dir(&pathbuf) {
+                if let Err(e) = env::set_current_dir(pathbuf) {
                     err_log(e.to_string());
                 }
 }

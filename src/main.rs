@@ -1,20 +1,22 @@
 use std::env;
-use std::io::{stdin, stdout, Write};
+use std::cmp::Ordering;
 use std::path::Path;
-use std::process::{Child, Command, Stdio};
 
-// mod display; 
 mod shell;
 
 fn main() {
 
     // startup directory arg
     let args: Vec<String> = env::args().collect();
-    if args.len() > 2 {
-        println!("Intended usage: ./simple_shell optional:start_dir")
-    } else if args.len() == 2 {
+    match args.len().cmp(&2){
+        Ordering::Greater => {
+            println!("Intended usage: ./simple_shell optional:start_dir");
+        }
+        Ordering::Equal => {
         let path = Path::new(args.get(1).unwrap());
-        assert!(env::set_current_dir(&path).is_ok());
+        assert!(env::set_current_dir(path).is_ok());
+        }
+        Ordering::Less => {} // nothing needed
     }
 
     // main loop for shell
