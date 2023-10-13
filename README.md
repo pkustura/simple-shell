@@ -5,12 +5,12 @@ Written while learning rust, and my first rust program! Hello, world!
 # Implemented Features:
 - Optional path argument to set current working directory
 - Basic built-in commands: exit, cd
-- Basic command piping (with "|" but not yet supporting "&|")
-- Basic text coloring (for error output and user prompt) via crate owo-colors
+- Command piping (with "|" but not yet supporting "&|")
+- Text coloring (for error output and user prompt) via crate owo-colors
 
 
 # Features to-do:
-- Simple signal handling
+- Signal handling
 - Background processes ("&")
 - Redirections
 - configuration file (for colors, aliases, etc)
